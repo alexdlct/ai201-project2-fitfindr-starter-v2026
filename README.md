@@ -40,7 +40,7 @@
 ## What This Does
 
 <!-- Three or four sentences: what a user asks for, and what they get back. -->
-
+A user asks for some type of clothing with constraints, which could be characteristics like size or upper bound. The agent then parses the query, searches mock listings for a matching item, and if it finds an item that matches the query then it will check the user's wardrobe. Once within the wardrobe, the agent will then suggest other items within the wardrobe to create an outfit for the user to wear. 
 
 
 ---
@@ -59,24 +59,24 @@
 
 ### `search_listings`
 
-- **What it does:**
-- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Searches the listing data for items that match the input description, and optionally a price or size, returning the results.
+- **Inputs:** description (str), size (str), max_price (float) <!-- name and type each: `max_price` (float), not "a price" -->
+- **Returns:** A list of listing dicts, ordered in the decreasing order of most matching. Each dict contains these fields: id, title, description, category, style_tags (list), size, condition, price (float), colors (list), brand (str or None), platform
+- **When it has nothing:** returns an empty list
 
 ### `suggest_outfit`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Takes a thrifted item as input, along with a user's existing wardrobe to suggest 1 or 2 outfits for the user that include the newly thrifted item.
+- **Inputs:** new_item (dict), wardrobe (dict)
+- **Returns:** A string that contains outfit suggestions for the user using both the new item and their existing wardrobe items. (LLM output string)
+- **When it has nothing:** Returns an error message and stops the agent
 
 ### `create_fit_card`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Generates a postable caption about the item (with different outputs for different items), specifically mentioning its price and the platform the listing is on, and its "vibe".
+- **Inputs:** outfit (str) new_item (dict)
+- **Returns:** A string that contains the caption of the post.
+- **When it has nothing:** Returns an error message and stops the agent
 
 ---
 
@@ -93,7 +93,7 @@
      The grader checks your code against what you claim here, so the file and
      function have to be real. -->
 
-**Branch rule:**
+**Branch rule:** "If search_listings returns an empty list, put a message in the session and stop. Otherwise, take the first result and go to suggest_outfit."
 
 **Where it lives:** `agent.py::run_agent`
 
