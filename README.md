@@ -97,9 +97,9 @@ A user asks for some type of clothing with constraints, which could be character
 
 **Where it lives:** `agent.py::run_agent`
 
-**How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
+**How the query is parsed:** agent.py::parse_query uses regex. It looks for a dollar amount like $30 for max_price, a size phrase like size M or a trailing, M for size, then treats the remaining text as the item description.
 
-**What moves through the session:** <!-- which fields, in what order -->
+**What moves through the session:** The original query and wardrobe start in the session. run_agent adds parsed, then search_results. If that list is empty it sets error and stops. Otherwise it stores selected_item as the first search result, passes that item and wardrobe into suggest_outfit, stores outfit_suggestion, then passes outfit_suggestion and selected_item into create_fit_card and stores fit_card.
 
 ---
 
