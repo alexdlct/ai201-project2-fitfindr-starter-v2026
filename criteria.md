@@ -25,9 +25,7 @@ Given a query that matches at least one listing, the agent completes all three
 tool calls and returns a fit card — in at least 4 of 5 tries.
 
 **Why this target:**
-<!-- Why 4 of 5 and not 5 of 5? Something about your search, probably —
-     "my search is a plain keyword match and some phrasings will miss" is a
-     real answer. -->
+After the query is parsed, the workflow should be able to accurately find a string match for most listings. It doesn't expect 5 of 5 as the minimum requirement because we can't guarantee that the user defines clothing in a way that the agent can identify.
 
 ---
 
@@ -37,8 +35,7 @@ Given a query that matches no listings, the agent stops before calling
 `suggest_outfit` and returns a message naming what to change — 5 of 5 tries.
 
 **Why this target:**
-<!-- Why is 5 of 5 reasonable here when criterion 1 isn't? What's different
-     about this path? -->
+If there is no match, then there is nothing for our agent to suggest a new outfit for, so it must result in an error. Because this is a behavior that must always happen when there is no match, we require all 5 tries to satisfy this.
 
 ---
 
@@ -54,11 +51,12 @@ Given a query that matches no listings, the agent stops before calling
      compares session["selected_item"] against what actually reached
      suggest_outfit is the shape you're after. -->
 
-
+For a matching query, the listing id must match both the id of the item in the search results and the listing id recorded in the
+`suggest_outfit` trace input for 5 of 5 tries.
 
 **Why this target:**
 
-
+This should be 5 of 5 because the state handoff is a local, deterministic operation. Once the loop chooses the first search result, the exact same item should move through the session into the next tool every time.
 
 ---
 
@@ -75,11 +73,11 @@ Given a query that matches no listings, the agent stops before calling
      sentence? A card longer than a caption anyone would post? Any of those can
      be turned into a number. -->
 
-
+After each completed run, the fit card is two to four sentences and mentions the selected item's price and platform at least once for at least 4 of 5 tries.
 
 **Why this target:**
 
-
+The fit card is written by the model so the wording can vary and one response may be awkward or omit a detail. Requiring 4 of 5 keeps the target checkable while still holding the caption to the info that a user needs before deciding whether to buy the item.
 
 ---
 
@@ -92,11 +90,11 @@ Given a query that matches no listings, the agent stops before calling
      search respects a price ceiling — anything, as long as it names a number
      or an observable outcome. -->
 
-
+When the query includes a maximum price, every listing that returns from the listing search has a price that is always less than or equal to the parsed max price of the item from the original user query for 5 of 5 tries.
 
 **Why this target:**
 
-
+The price filter is deterministic and runs before any model call, so it shouldn't vary between trials. Returning an item over the user's budget would make the search feel untrustworthy even if the outfit suggestion and fit card were well written.
 
 ---
 
