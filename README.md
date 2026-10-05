@@ -113,7 +113,37 @@ A user asks for some type of clothing with constraints, which could be character
 **One full query**
 
 ```
-$ python app.py ask '...'
+$ python app.py ask 'vintage graphic tee under $30'
+[1] parse_query
+      in:  vintage graphic tee under $30
+      out: dict with keys: description, size, max_price
+[2] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey, Y2K Baby Tee — Butterfly Print … +7 more
+      →    10 match(es)
+[3] select_item
+      out: Graphic Tee — 2003 Tour Bootleg Style ($24.0, depop)
+[4] suggest_outfit
+      in:  Graphic Tee — 2003 Tour Bootleg Style ($24.0, depop)
+      out: **Outfit 1: 2000s Streetwear Grunge** Pair the Graphic Tee with your Baggy straight-leg jeans (dark wash) and …
+      →    10 wardrobe item(s)
+[5] create_fit_card
+      in:  Graphic Tee — 2003 Tour Bootleg Style ($24.0, depop)
+      out: Scored this perfectly faded 2003 tour bootleg graphic tee on Depop for just $24. It has that ultimate worn-in,…
+
+  Found:    Graphic Tee — 2003 Tour Bootleg Style — $24.0 on depop
+
+  Outfit:   **Outfit 1: 2000s Streetwear Grunge**
+Pair the Graphic Tee with your Baggy straight-leg jeans (dark wash) and layer the Vintage black denim jacket on top. Finish with the Chunky white sneakers and Black crossbody bag.
+*Vibe:* Effortless off-duty streetwear with a heavily worn-in, nostalgic edge. 
+
+**Outfit 2: High-Low Contrast**
+Tuck the Graphic Tee into your Wide-leg khaki trousers, accented with the Brown leather belt, and ground the look with your Black combat boots. 
+*Vibe:* Smart-casual grunge, blending relaxed vintage streetwear with structured earth-tone tailoring.
+
+  Fit card: Scored this perfectly faded 2003 tour bootleg graphic tee on Depop for just $24. It has that ultimate worn-in, nostalgic grunge edge that looks best styled with baggy dark-wash denim and chunky white sneakers. Effortless off-duty streetwear at its best.
+
+2 model calls this session, 774 prompt + 200 output tokens
 
 ```
 
@@ -142,15 +172,11 @@ Scored these vintage Levi's 501s for just $38.00 on Depop. They have the ultimat
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- I asked ChatGPT for help with defining how the items should be scored. It came up helped come up with the different weighting between tags/titles and descriptions and the other scoring weights.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked ChatGPT to check whether the planning loop matched the milestone instructions about state and branching and it verified that run_agent successfully stores each tool result within the session and keeps the fit_card as empty on the impossible query path. After that, I updated my readme to have the branch rule section.
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
